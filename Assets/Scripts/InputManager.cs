@@ -5,12 +5,15 @@ using UnityEngine;
 public class InputManager : MonoBehaviour {
     public bool invertZoom;
     public float panSpeed;
+    public float zoomSpeed;
     public float rotateSpeed;
     public float rotateAmount;
-    private Quaternion rotation;
+    public GameObject selectedObject;
     private float panDetect = 15f;
     private float minHeight = 10f;
     private float maxHeight = 100f;
+    private ObjectInfo selectedInfo;
+    private Quaternion rotation;
 
     // Start is called before the first frame update
     void Start() {
@@ -24,6 +27,29 @@ public class InputManager : MonoBehaviour {
 
         if ( Input.GetKeyDown( KeyCode.Space ) ) {
             Camera.main.transform.rotation = rotation;
+        }
+
+        if ( Input.GetMouseButtonDown( 0 ) ) {
+            LeftClick();
+        }
+    }
+
+    public void LeftClick() {
+        Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
+        RaycastHit hit;
+
+        if ( Physics.Raycast( ray, out hit, 100 ) ) {
+            if ( hit.collider.tag == "Ground" ) {
+                selectedInfo = selectedObject.GetComponent<ObjectInfo>();
+                selectedInfo.isSelected = false;
+                selectedObject = null;
+                Debug.Log( "Deselected" );
+            } else if ( hit.collider.tag == "Selectable" ) {
+                selectedObject = hit.collider.gameObject;
+                selectedInfo = selectedObject.GetComponent<ObjectInfo>();
+                selectedInfo.isSelected = true;
+                Debug.Log( "Selected" + selectedInfo.objectName );
+            }
         }
     }
 
@@ -48,9 +74,9 @@ public class InputManager : MonoBehaviour {
         }
 
         if ( invertZoom ) {
-          moveY += Input.GetAxis( "Mouse ScrollWheel" ) * ( panSpeed * 20 );
+            moveY += Input.GetAxis( "Mouse ScrollWheel" ) * ( zoomSpeed * 20 );
         } else {
-          moveY -= Input.GetAxis( "Mouse ScrollWheel" ) * ( panSpeed * 20 );
+            moveY -= Input.GetAxis( "Mouse ScrollWheel" ) * ( zoomSpeed * 20 );
         }
 
         moveY = Mathf.Clamp( moveY, minHeight, maxHeight );
