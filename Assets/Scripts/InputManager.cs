@@ -25,10 +25,12 @@ public class InputManager : MonoBehaviour {
         MoveCamera();
         RotateCamera();
 
+        // Reset Camera
         if ( Input.GetKeyDown( KeyCode.Space ) ) {
             Camera.main.transform.rotation = rotation;
         }
 
+        // Left Mouse Click
         if ( Input.GetMouseButtonDown( 0 ) ) {
             LeftClick();
         }
@@ -39,7 +41,7 @@ public class InputManager : MonoBehaviour {
         RaycastHit hit;
 
         if ( Physics.Raycast( ray, out hit, 100 ) ) {
-            if ( hit.collider.tag == "Ground" ) {
+            if ( hit.collider.tag == "Ground" && selectedObject != null ) {
                 selectedInfo = selectedObject.GetComponent<ObjectInfo>();
                 selectedInfo.isSelected = false;
                 selectedObject = null;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class NodeManager : MonoBehaviour {
-    public enum ResourceTypes { Stone, Wood, Gold, Food }
+    public enum ResourceTypes { Stone, Wood, Gold, Food, Population }
     public ResourceTypes resourceType;
     public float harvestTime;
     public float availableResource;

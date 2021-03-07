@@ -2,99 +2,86 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public class ObjectInfo : MonoBehaviour {
-    public NodeManager.ResourceTypes heldResourceType;
+    public GameObject iconCamera;
+    public CanvasGroup UserPanel;
     public bool isSelected = false;
-    public bool isGathering = false;
     public string objectName;
-    private NavMeshAgent agent;
-    public int heldResource;
-    public int maxHeldResource;
-    GameObject[] drops;
+    public Text nameDisplay;
+    public Slider HB;
+    public int health;
+    public int maxHealth;
+
+    public Slider MB;
+    public int magicka;
+    public int maxMagicka;
+
+    public Slider SB;
+    public int stamina;
+    public int maxStamina;
+
+    public int physicalAttack;
+    public int physicalDefence;
+    public int magicalAttack;
+    public int magicalDefence;
+    public int rangedAttack;
+    public int rangedDefence;
+    public Text physicalAttackDisplay;
+    public Text physicalDefenceDisplay;
+    public Text magicalAttackDisplay;
+    public Text magicalDefenceDisplay;
+    public Text rangedAttackDisplay;
+    public Text rangedDefenceDisplay;
 
     // Start is called before the first frame update
     void Start() {
-        StartCoroutine( GatherTick() );
-        agent = GetComponent<NavMeshAgent>();
+
     }
 
     // Update is called once per frame
     void Update() {
 
-        if ( heldResource >= maxHeldResource ) {
-            drops = GameObject.FindGameObjectsWithTag( "Drops" );
-            agent.destination = GetClosestDropOff( drops ).transform.position;
+        if ( maxStamina <= 0 ) {
+            SB.gameObject.SetActive( false );
         }
 
-        if ( Input.GetMouseButtonDown( 1 ) && isSelected ) {
-            RightClick();
-        }
-    }
-
-    GameObject GetClosestDropOff( GameObject[] dropOffs ) {
-        GameObject closestDrop = null;
-        float closestDistance = Mathf.Infinity;
-        Vector3 position = transform.position;
-
-        foreach ( GameObject targetDrop in dropOffs ) {
-            Vector3 direction = targetDrop.transform.position - position;
-            float distance = direction.sqrMagnitude;
-
-            if ( distance < closestDistance ) {
-                closestDistance = distance;
-                closestDrop = targetDrop;
-            }
+        if ( maxMagicka <= 0 ) {
+            MB.gameObject.SetActive( false );
         }
 
-        drops = null;
-        return closestDrop;
-    }
-
-    void RightClick() {
-        Ray ray = Camera.main.ScreenPointToRay( Input.mousePosition );
-        RaycastHit hit;
-
-        if ( Physics.Raycast( ray, out hit, 100 ) ) {
-            if ( hit.collider.tag == "Ground" ) {
-                agent.destination = hit.point;
-                Debug.Log( "Moving" );
-            } else if ( hit.collider.tag == "Resource" ) {
-                agent.destination = hit.collider.gameObject.transform.position;
-                Debug.Log( "Harvesting" );
-            }
+        if ( health <= 0 ) {
+            Destroy( gameObject );
         }
-    }
 
-    public void OnTriggerEnter( Collider other ) {
-        GameObject hitObject = other.gameObject;
+        nameDisplay.text = objectName;
+        iconCamera.SetActive( isSelected );
 
-        if ( hitObject.tag == "Resource" ) {
-            Debug.Log( "Is in Resource trigger" );
-            isGathering = true;
-            hitObject.GetComponent<NodeManager>().gatherers++;
-            heldResourceType = hitObject.GetComponent<NodeManager>().resourceType;
-        }
-    }
+        HB.maxValue = maxHealth;
+        HB.value = health;
 
-    public void OnTriggerExit( Collider other ) {
-        GameObject hitObject = other.gameObject;
+        MB.maxValue = maxMagicka;
+        MB.value = magicka;
 
-        if ( hitObject.tag == "Resource" ) {
-          Debug.Log( "Exited Resource trigger" );
-            hitObject.GetComponent<NodeManager>().gatherers--;
-        }
-    }
+        SB.maxValue = maxStamina;
+        SB.value = stamina;
 
-    IEnumerator GatherTick() {
-        while( true ) {
-            yield return new WaitForSeconds( 1 );
+        physicalAttackDisplay.text = "PATK: " + physicalAttack;
+        physicalDefenceDisplay.text = "PDEF: " + physicalDefence;
+        magicalAttackDisplay.text = "MATK: " + magicalAttack;
+        magicalDefenceDisplay.text = "MDEF: " + magicalDefence;
+        rangedAttackDisplay.text = "RATK: " + rangedAttack;
+        rangedDefenceDisplay.text = "RDEF: " + rangedDefence;
 
-            if ( isGathering ) {
-                if ( heldResource < maxHeldResource ) {
-                    heldResource++;
-                }
-            }
+        if ( isSelected ) {
+            UserPanel.alpha = 1;
+            UserPanel.blocksRaycasts = true;
+            UserPanel.interactable = true;
+        } else {
+            UserPanel.alpha = 0;
+            UserPanel.blocksRaycasts = false;
+            UserPanel.interactable = false;
         }
     }
 }
