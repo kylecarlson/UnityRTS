@@ -5,7 +5,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 
 public class ObjectInfo : MonoBehaviour {
-    public GameObject iconCamera;
+
     public CanvasGroup UserPanel;
     public bool isSelected = false;
     public string objectName;
@@ -56,7 +56,6 @@ public class ObjectInfo : MonoBehaviour {
         }
 
         nameDisplay.text = objectName;
-        iconCamera.SetActive( isSelected );
 
         HB.maxValue = maxHealth;
         HB.value = health;
