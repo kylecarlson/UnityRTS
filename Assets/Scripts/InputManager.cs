@@ -56,9 +56,8 @@ public class InputManager : MonoBehaviour {
     }
 
     void MoveCamera() {
-        float moveX = Camera.main.transform.position.x;
-        float moveY = Camera.main.transform.position.y;
-        float moveZ = Camera.main.transform.position.z;
+        float moveX, moveY, moveZ;
+        moveX = moveY = moveZ = 0;
 
         float xPos = Input.mousePosition.x;
         float yPos = Input.mousePosition.y;
@@ -69,9 +68,12 @@ public class InputManager : MonoBehaviour {
             moveX += panSpeed;
         }
 
-        if ( Input.GetKey( KeyCode.W ) || yPos < Screen.height && yPos > Screen.height - panDetect ) {
+        if (Input.GetKey(KeyCode.W) || yPos < Screen.height && yPos > Screen.height - panDetect)
+        {
             moveZ += panSpeed;
-        } else if ( Input.GetKey( KeyCode.S ) || yPos > 0 && yPos < panDetect ) {
+        }
+        else if (Input.GetKey(KeyCode.S) || yPos > 0 && yPos < panDetect)
+        {
             moveZ -= panSpeed;
         }
 
@@ -81,10 +83,10 @@ public class InputManager : MonoBehaviour {
             moveY -= Input.GetAxis( "Mouse ScrollWheel" ) * ( zoomSpeed * 20 );
         }
 
-        moveY = Mathf.Clamp( moveY, minHeight, maxHeight );
-        Vector3 newPos = new Vector3( moveX, moveY, moveZ );
+        moveY = Mathf.Clamp( moveY, minHeight - Camera.main.transform.position.y, maxHeight - Camera.main.transform.position.y);
+        Vector3 direction = new Vector3( moveX, moveY, moveZ );
 
-        Camera.main.transform.position = newPos;
+        Camera.main.transform.Translate(direction, Space.Self);
     }
 
     void RotateCamera() {
