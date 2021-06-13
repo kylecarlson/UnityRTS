@@ -81,16 +81,12 @@ public class InputManager : MonoBehaviour {
             moveZ -= panSpeed;
         }
 
-        if ( invertZoom ) {
-            moveY += Input.GetAxis( "Mouse ScrollWheel" ) * ( zoomSpeed * 20 );
-        } else {
-            moveY -= Input.GetAxis( "Mouse ScrollWheel" ) * ( zoomSpeed * 20 );
-        }
-
-        moveY = Mathf.Clamp( moveY, minHeight - Camera.main.transform.position.y, maxHeight - Camera.main.transform.position.y);
         Vector3 direction = new Vector3( moveX, moveY, moveZ );
 
         Camera.main.transform.Translate(direction, Space.Self);
+
+        moveY = Mathf.Clamp(transform.position.y, minHeight, maxHeight);
+        Camera.main.transform.position = new Vector3(Camera.main.transform.position.x, moveY, Camera.main.transform.position.z);
     }
 
     void RotateCamera() {
