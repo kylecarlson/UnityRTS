@@ -1479,7 +1479,7 @@ MonoBehaviour:
   invertZoom: 0
   panSpeed: 0.1
   zoomSpeed: 0.5
-  rotateSpeed: 50
+  rotateSpeed: 120
   rotateAmount: 50
   selectedObject: {fileID: 0}
 --- !u!114 &693068270
