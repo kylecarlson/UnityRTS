@@ -9,15 +9,19 @@ public class InputManager : MonoBehaviour {
     public float rotateSpeed;
     public float rotateAmount;
     public GameObject selectedObject;
-    private float panDetect = 15f;
     private float minHeight = 10f;
     private float maxHeight = 100f;
     private ObjectInfo selectedInfo;
     private Quaternion rotation;
 
+    private float panDetect; // Set on Start()
+    public float panModif = 0.05f; // 5% of the screen on each side is used for movement
+
     // Start is called before the first frame update
     void Start() {
         rotation = Camera.main.transform.rotation;
+
+        panDetect = (Screen.width + Screen.height) / 2 * panModif;
     }
 
     // Update is called once per frame
